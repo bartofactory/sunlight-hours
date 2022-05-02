@@ -1,18 +1,19 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png" />
-    <HelloWorld msg="Welcome to Your Vue.js + TypeScript App" />
-  </div>
+  <main>
+    <div id="current-date">{{ todayDate }}</div>
+    <div id="current-location">10.745546756856, -12.0045645745</div>
+  </main>
 </template>
 
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
-import HelloWorld from "@/components/HelloWorld.vue"; // @ is an alias to /src
+import { Vue } from "vue-class-component";
+import { DateTime } from "luxon";
 
-@Options({
-  components: {
-    HelloWorld,
-  },
-})
-export default class HomeView extends Vue {}
+export default class HomeView extends Vue {
+  currentDate = DateTime.now();
+
+  get todayDate() {
+    return this.currentDate.toFormat("ccc d LLL yyyy", { locale: "it" });
+  }
+}
 </script>
