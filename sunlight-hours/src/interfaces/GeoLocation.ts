@@ -1,4 +1,6 @@
+import UserLocation from "@/types/UserLocation";
+
 export default interface GeoLocation{
     isGeolocationSupported() : boolean,
-    getCurrentCoordinates(): void
+    getCurrentCoordinates(): Promise<UserLocation>
 }

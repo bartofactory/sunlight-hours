@@ -2,39 +2,39 @@
   <main>
     <div id="current-date">{{ currentItalianDate }}</div>
     <div id="current-location">{{ currentStringLocation }}</div>
+    <DaylightTile />
   </main>
 </template>
 
 <script lang="ts">
-import { Vue } from "vue-class-component";
+import { Options, Vue } from "vue-class-component";
 import store from "@/store/index";
-import { DateTime } from "luxon/src/luxon";
-import BrowserGeolocationService from "@/services/BrowserGeolocationService";
-import GeoLocation from "@/interfaces/GeoLocation";
-import Location from "@/types/Location";
+import UserLocation from "@/types/UserLocation";
+import DaylightTile from "../components/DaylightTile.vue";
 
+@Options({
+  components: {
+    DaylightTile,
+  },
+  props: {},
+})
 export default class HomeView extends Vue {
   public get currentItalianDate(): string {
-    return store.getters.todayDateInItalianFormat
-      ? store.getters.todayDateInItalianFormat
-      : "No data";
+    return store.state.currentDate.toFormat("ccc d LLL yyyy", { locale: "it" });
   }
 
-  public get currentBrowserLocation(): Location {
+  public get currentBrowserLocation(): UserLocation {
     return store.state.userBrowserLocation;
   }
 
   public get currentStringLocation(): string {
-    const coords: Location = store.state.userBrowserLocation;
-    return coords.latitude && coords.latitude
-      ? `${coords.latitude} - ${coords.longitude}`
-      : `No data`;
+    const coords: UserLocation = store.state.userBrowserLocation;
+    return coords ? `${coords.latitude} - ${coords.longitude}` : `No data`;
   }
 
   mounted() {
-    store.state.currentDate = DateTime.now();
-    const geolocationService: GeoLocation = new BrowserGeolocationService();
-    geolocationService.getCurrentCoordinates();
+    store.dispatch("setCurrentDate");
+    store.dispatch("updateLocation");
   }
 }
 </script>
