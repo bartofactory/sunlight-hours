@@ -1,19 +1,40 @@
 <template>
   <main>
-    <div id="current-date">{{ todayDate }}</div>
-    <div id="current-location">10.745546756856, -12.0045645745</div>
+    <div id="current-date">{{ currentItalianDate }}</div>
+    <div id="current-location">{{ currentStringLocation }}</div>
   </main>
 </template>
 
 <script lang="ts">
 import { Vue } from "vue-class-component";
-import { DateTime } from "luxon";
+import store from "@/store/index";
+import { DateTime } from "luxon/src/luxon";
+import BrowserGeolocationService from "@/services/BrowserGeolocationService";
+import GeoLocation from "@/interfaces/GeoLocation";
+import Location from "@/types/Location";
 
 export default class HomeView extends Vue {
-  currentDate = DateTime.now();
+  public get currentItalianDate(): string {
+    return store.getters.todayDateInItalianFormat
+      ? store.getters.todayDateInItalianFormat
+      : "No data";
+  }
 
-  get todayDate() {
-    return this.currentDate.toFormat("ccc d LLL yyyy", { locale: "it" });
+  public get currentBrowserLocation(): Location {
+    return store.state.userBrowserLocation;
+  }
+
+  public get currentStringLocation(): string {
+    const coords: Location = store.state.userBrowserLocation;
+    return coords.latitude && coords.latitude
+      ? `${coords.latitude} - ${coords.longitude}`
+      : `No data`;
+  }
+
+  mounted() {
+    store.state.currentDate = DateTime.now();
+    const geolocationService: GeoLocation = new BrowserGeolocationService();
+    geolocationService.getCurrentCoordinates();
   }
 }
 </script>
