@@ -19,7 +19,7 @@ import { Options, Vue } from "vue-class-component";
 import store from "@/store/index";
 import UserLocation from "@/types/UserLocation";
 import DaylightTile from "../components/DaylightTile.vue";
-import { DateTime, Duration, Info } from "luxon";
+import { DateTime, Info } from "luxon";
 
 @Options({
   components: {

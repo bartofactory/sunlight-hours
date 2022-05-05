@@ -15,7 +15,6 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: "/:catchAll(.*)",
-    name: "home",
     component: HomeView,
   },
 ];
