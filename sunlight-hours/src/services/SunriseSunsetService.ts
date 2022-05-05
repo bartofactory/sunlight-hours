@@ -21,6 +21,17 @@ export default class SunriseSunsetService implements SunriseSunsetRepo {
     location: UserLocation,
     date: DateTime
   ): Promise<SunriseSunsetResult> {
-    throw new Error("Method not implemented.");
+    return new Promise<SunriseSunsetResult>((resolve, reject) => {
+      axios
+        .get<SunriseSunsetResult>(
+          `https://api.sunrise-sunset.org/json?lat=${location.latitude}&lng=${
+            location.longitude
+          }&date=${date.toISODate()}`
+        )
+        .then((res) => {
+          resolve(res.data);
+        })
+        .catch((err) => reject(err));
+    });
   }
 }

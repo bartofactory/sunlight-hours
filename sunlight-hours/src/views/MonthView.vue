@@ -1,11 +1,15 @@
 <template>
-  <main class="grid justify-content-center flex-wrap">
+  <main>
+    <div v-if="inputError" class="error">
+      <h3>Month not in range</h3>
+      <br /><strong
+        >Please insert a number from 1 = January, to 12 = December</strong
+      >
+    </div>
     <DaylightTile
-      v-for="month in monthsInTime"
-      :key="month"
-      :date="month"
+      v-else
       :location="currentBrowserLocation"
-      class="tile col"
+      :date="monthDate[0]"
     />
   </main>
 </template>
@@ -23,6 +27,10 @@ import { DateTime, Duration, Info } from "luxon";
   },
 })
 export default class HomeView extends Vue {
+  get inputError(): boolean {
+    const param = parseInt(this.$route.params.monthNumber as string);
+    return !isNaN(param) && (param < 1 || param > 12);
+  }
   months: DateTime[] = Info.months("numeric").map((nMont) => {
     return DateTime.fromObject({
       day: DateTime.now().day,
@@ -30,30 +38,23 @@ export default class HomeView extends Vue {
       year: DateTime.now().year,
     });
   }) as DateTime[];
-
-  public get tileDate(): DateTime {
-    return DateTime.now();
-  }
-
-  public get currentItalianDate(): string {
-    return this.tileDate.toFormat("ccc d LLL yyyy", { locale: "it" });
-  }
-
   public get currentBrowserLocation(): UserLocation {
     return store.getters.currentUserLocation;
   }
-
-  public get currentStringLocation(): string {
-    const coords: UserLocation = store.state.userBrowserLocation;
-    return coords ? `${coords.latitude} - ${coords.longitude}` : `No data`;
-  }
-
-  public get dayLengthInMonths(): Duration[] {
-    return store.getters.dayLengthByMonth;
-  }
-
-  public get monthsInTime(): DateTime[] {
-    return this.months;
+  public get monthDate(): DateTime[] {
+    return this.months.filter(
+      (month) => month.month.toString() === this.$route.params.monthNumber
+    );
   }
 }
 </script>
+
+<style scoped>
+main {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+}
+</style>

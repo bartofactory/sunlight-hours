@@ -1,26 +1,65 @@
 <template>
-  <div>Hours of daylight: {{ dayligthDuration }}</div>
+  <Card class="card">
+    <template #header>
+      <h3 class="day">{{ tileDate }}</h3>
+    </template>
+    <template #content>
+      <small>Day light:</small>
+      <h2>{{ dayligthDuration }}</h2>
+    </template>
+  </Card>
 </template>
 
 <script lang="ts">
-import { Vue } from "vue-class-component";
+import { Vue, prop } from "vue-class-component";
 import store from "@/store";
 import UserLocation from "@/types/UserLocation";
+import { DateTime, Duration } from "luxon";
 
-export default class DaylightTile extends Vue {
+class Props {
+  location: UserLocation = prop({
+    required: true,
+  });
+  date: DateTime | undefined = prop({
+    required: false,
+  });
+}
+
+export default class DaylightTile extends Vue.with(Props) {
   get dayligthDuration(): string {
-    return store.state.dayLength.toISOTime();
+    if (this.date !== undefined) {
+      return store.getters.dayLengthByMonth[this.date.month]
+        ? (
+            store.getters.dayLengthByMonth[this.date.month] as Duration
+          ).toISOTime({ suppressMilliseconds: true })
+        : "..:..:..";
+    }
+    return "..:..:..";
+  }
+
+  get tileDate(): string {
+    return this.date !== undefined
+      ? this.date.toFormat("ccc d LLL yyyy", { locale: "it" })
+      : "Retrieving current date...";
   }
 
   mounted() {
     store.watch(
-      () => store.getters.currentUserLocation,
+      () => this.location,
       (val: UserLocation, oldVal: UserLocation) => {
-        if (val !== oldVal) store.dispatch("updateDayLight");
+        if (val !== oldVal) store.dispatch("updateDayLight", this.date);
       }
     );
   }
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+.card {
+  margin: 5px;
+  min-width: 200px;
+}
+.day {
+  padding: 0px 20px;
+}
+</style>
