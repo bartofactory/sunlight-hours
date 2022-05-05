@@ -1,6 +1,20 @@
 # sunlight-hours
 
+## Features
+The PWA exposes two endpoint:
+
+
+* `https://daylight-in-month.netlify.app/`
+**Daylight throught the year** 
+This is the home of the application, that given the current user browser location and the actual date. It shows the time of light during the same day throught the months of the year
+
+* `https://daylight-in-month.netlify.app/month/:monthOfTheYear`
+**Daylight in a specific month** 
+Given the current user browser location and the month passed via path param. It shows the time of light in a specific month
+
 ## Project setup
+In order to run the project follow the steps
+### Install the dependencies
 ```
 yarn install
 ```
@@ -15,15 +29,7 @@ yarn serve
 yarn build
 ```
 
-### Run your unit tests
-```
-yarn test:unit
-```
-
 ### Lints and fixes files
 ```
 yarn lint
 ```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
