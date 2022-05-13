@@ -13,23 +13,34 @@ This is the home of the application, that given the current user browser locatio
 Given the current user browser location and the month passed via path param. It shows the time of light in a specific month
 
 ## Project setup
-In order to run the project follow the steps
-### Install the dependencies
+The project could run on host machine or in docker environment
+
+### Host Machine
+Follow these steps
+
+1. Install the dependencies
 ```
 yarn install
 ```
 
-### Compiles and hot-reloads for development
+2. Compiles and hot-reloads for development
 ```
 yarn serve
 ```
 
-### Compiles and minifies for production
+3. To compile and minify for production
 ```
 yarn build
 ```
 
-### Lints and fixes files
+### Docker environment
+1. Install docker environment
+2. Build the image
 ```
-yarn lint
+docker build . -t bartolomeotiralongo/sunlight-hours
 ```
+3. Run the image
+```
+docker run -p 8080:8080 bartolomeotiralongo/sunlight-hours
+```
+4. Visit the website at http://localhost:8080
